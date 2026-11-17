@@ -29,8 +29,11 @@ body.dragging .divider::before{opacity:1;transform:translate(-50%,-50%) scale(1)
 
 /* Show one clear symbol while dragging; hide the underlying grip. */
 body.dragging .divider::after{background:none}
+
+/* Keep the dark circular drag cue; suppress iOS square touch highlight. */
+.divider,.divider::before,.divider::after{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
 </style></head><body><main class="app"><section class="panes" id="panes"><div class="pane" id="top"><div class="web-content"><iframe title="Øverste hjemmeside" referrerpolicy="no-referrer"></iframe></div><form novalidate class="bar" data-id="0"><input aria-label="Øverste webadresse" type="url" inputmode="url" placeholder="https://example.com"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div><div class="divider" id="divider" role="separator" aria-label="Træk for at ændre højden" aria-orientation="horizontal"></div><div class="pane" id="bottom"><div class="web-content"><iframe title="Nederste hjemmeside" referrerpolicy="no-referrer"></iframe></div><form novalidate class="bar" data-id="1"><input aria-label="Nederste webadresse" type="url" inputmode="url" placeholder="https://example.org"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div></section></main><script>
-const APP_VERSION='2026-11-17-single-drag-icon-48';
+const APP_VERSION='2026-11-17-circle-only-drag-49';
 // Extend the outer app into the iOS home-indicator safe area while keeping top:0.
 // Fixed top/bottom constraints adapt to viewport and orientation changes.
 
