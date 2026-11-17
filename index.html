@@ -7,7 +7,7 @@
 /* Landscape: keep both URL controls visible above the scaled web views. */
 @media (orientation:landscape){.pane .bar{position:absolute;top:0;left:0;right:0;margin:0;z-index:8}.pane .show-url,.pane.url-hidden .show-url{top:0;bottom:auto;border-radius:0 0 12px 12px;z-index:9}.pane:not(.url-hidden) .show-url{top:48px;bottom:auto}}
 body::before,body::after,.app::before,.app::after{content:''!important;display:block!important;position:fixed!important;width:32px!important;height:32px!important;z-index:2147483647!important;pointer-events:none!important;border:3px solid black!important}body::before{top:0!important;left:0!important;background:#00ff00!important}body::after{top:0!important;right:0!important;background:#00ff00!important}.app::before{bottom:0!important;left:0!important;background:#ff00ff!important}.app::after{bottom:0!important;right:0!important;background:#ff00ff!important}</style></head><body><main class="app"><section class="panes" id="panes"><div class="pane" id="top"><iframe title="Øverste hjemmeside" referrerpolicy="no-referrer"></iframe><form novalidate class="bar" data-id="0"><input aria-label="Øverste webadresse" type="url" inputmode="url" placeholder="https://example.com"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div><div class="divider" id="divider" role="separator" aria-label="Træk for at ændre højden" aria-orientation="horizontal"></div><div class="pane" id="bottom"><iframe title="Nederste hjemmeside" referrerpolicy="no-referrer"></iframe><form novalidate class="bar" data-id="1"><input aria-label="Nederste webadresse" type="url" inputmode="url" placeholder="https://example.org"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div></section></main><script>
-const APP_VERSION='2026-11-17-landscape-url-visible-34';
+const APP_VERSION='2026-11-17-landscape-viewport-height-35';
 // Extend the outer app into the iOS home-indicator safe area while keeping top:0.
 // Fixed top/bottom constraints adapt to viewport and orientation changes.
 
@@ -17,7 +17,8 @@ function syncAppScreenHeight(){
  const app=document.querySelector('.app');
  const standalone=navigator.standalone===true || matchMedia('(display-mode: standalone)').matches;
  const h=screen.height;
- app.style.height=standalone && Number.isFinite(h) && h>0 ? h+'px' : '100dvh';
+ const landscape=matchMedia('(orientation:landscape)').matches;
+ app.style.height=standalone && !landscape && Number.isFinite(h) && h>0 ? h+'px' : '100dvh';
 }
 syncAppScreenHeight();
 addEventListener('orientationchange',()=>setTimeout(syncAppScreenHeight,300));
