@@ -17,12 +17,11 @@
 .pane .bar button{flex:none;border-radius:999px;padding:10px 16px;background:#273b56;color:#fff;font-weight:600;font-size:13px}
 @media (orientation:portrait){#bottom .bar{top:28px;bottom:auto}}
 
-/* Clean vector grip: no Unicode arrows or platform emoji. */
+/* Temporary drag feedback, visible only while the divider is held. */
 .divider{position:relative;z-index:7}
-.divider::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.88);width:58px;height:58px;border-radius:50%;background:#18263a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M8 9l-3 3 3 3M16 9l3 3-3 3'/%3E%3C/svg%3E") center/34px 34px no-repeat;box-shadow:0 5px 18px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .13s ease,transform .13s ease}
+.divider::before{content:"↕";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.85);width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(24,38,58,.78);color:#fff;font-size:27px;font-weight:500;line-height:1;box-shadow:0 5px 18px rgba(0,0,0,.28);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .13s ease,transform .13s ease}
 body.dragging .divider::before{opacity:1;transform:translate(-50%,-50%) scale(1)}
-
-@media (orientation:portrait){.divider::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg transform='rotate(90 12 12)'%3E%3Cpath d='M5 12h14M8 9l-3 3 3 3M16 9l3 3-3 3'/%3E%3C/g%3E%3C/svg%3E")}}
+@media (orientation:landscape){.divider::before{content:"↔"}}
 
 /* Larger invisible touch target without making the 6px divider thicker. */
 .divider::after{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:100%;height:44px;min-width:44px;background:linear-gradient(to right,transparent calc(50% - 26px),#94a3b8 calc(50% - 26px),#94a3b8 calc(50% + 26px),transparent calc(50% + 26px)) center/100% 4px no-repeat;touch-action:none}
@@ -33,13 +32,8 @@ body.dragging .divider::after{background:none}
 
 /* Keep the dark circular drag cue; suppress iOS square touch highlight. */
 .divider,.divider::before,.divider::after{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
-
-
-/* URL handles must win hit-testing over the divider's expanded touch area. */
-.pane{z-index:8}
-.show-url{z-index:12}
 </style></head><body><main class="app"><section class="panes" id="panes"><div class="pane" id="top"><div class="web-content"><iframe title="Øverste hjemmeside" referrerpolicy="no-referrer"></iframe></div><form novalidate class="bar" data-id="0"><input aria-label="Øverste webadresse" type="url" inputmode="url" placeholder="https://example.com"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div><div class="divider" id="divider" role="separator" aria-label="Træk for at ændre højden" aria-orientation="horizontal"></div><div class="pane" id="bottom"><div class="web-content"><iframe title="Nederste hjemmeside" referrerpolicy="no-referrer"></iframe></div><form novalidate class="bar" data-id="1"><input aria-label="Nederste webadresse" type="url" inputmode="url" placeholder="https://example.org"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div></section></main><script>
-const APP_VERSION='2026-11-17-url-handles-priority-60';
+const APP_VERSION='2026-11-17-circle-only-drag-49';
 // Extend the outer app into the iOS home-indicator safe area while keeping top:0.
 // Fixed top/bottom constraints adapt to viewport and orientation changes.
 
@@ -69,7 +63,7 @@ forms.forEach((form,i)=>{
 window.addEventListener('blur',()=>{const focused=document.activeElement;const i=forms.findIndex(form=>form.parentElement.querySelector('iframe')===focused);if(i!==-1)hideBar(i)});
 function load(i,raw){const url=normalize(raw);if(!url){alert('Indtast en gyldig webadresse');return}forms[i].querySelector('input').value=url;const pane=forms[i].parentElement;const frame=pane.querySelector('iframe');frame.removeAttribute('srcdoc');frame.src=url;localStorage.setItem('split-url-'+i,url);forms[i].querySelector('input').blur();hideBar(i)}
 forms.forEach((form,i)=>{form.addEventListener('submit',e=>{e.preventDefault();load(i,form.querySelector('input').value)});const saved=localStorage.getItem('split-url-'+i);if(saved)load(i,saved);else{const frame=form.parentElement.querySelector('iframe');frame.srcdoc='<html lang="da"><meta name="viewport" content="width=device-width,initial-scale=1"><body style="font:16px -apple-system,sans-serif;padding:22px;color:#334155"><h3>Vindue '+(i+1)+' er klar</h3><p>Skriv en webadresse ovenfor og tryk Åbn.</p><p>Bemærk: Mange hjemmesider tillader ikke visning inde i andre hjemmesider.</p></body></html>'}});
-divider.addEventListener('pointerdown',e=>{const r=divider.getBoundingClientRect();const landscape=matchMedia('(orientation:landscape)').matches;const centered=landscape?Math.abs(e.clientY-(r.top+r.height/2))<64:Math.abs(e.clientX-(r.left+r.width/2))<64;if(centered)return;divider.setPointerCapture(e.pointerId);document.body.classList.add('dragging')});divider.addEventListener('pointermove',e=>{if(!divider.hasPointerCapture(e.pointerId))return;const r=panes.getBoundingClientRect();const horizontal=matchMedia('(orientation:landscape)').matches;ratio=Math.max(.2,Math.min(.8,horizontal?(e.clientX-r.left)/(r.width-divider.offsetWidth):(e.clientY-r.top)/(r.height-divider.offsetHeight)));layout()});function stop(){document.body.classList.remove('dragging');localStorage.setItem('split-ratio',ratio)}divider.addEventListener('pointerup',stop);divider.addEventListener('pointercancel',stop);document.addEventListener('focusout',()=>{window.scrollTo(0,0);requestAnimationFrame(layout);setTimeout(layout,350);setTimeout(layout,800)});window.addEventListener('resize',layout);window.addEventListener('orientationchange',()=>{layout.maxHeight=0;requestAnimationFrame(layout);setTimeout(layout,400)});if(window.visualViewport){window.visualViewport.addEventListener('resize',layout);window.visualViewport.addEventListener('scroll',layout)}layout();
+divider.addEventListener('pointerdown',e=>{divider.setPointerCapture(e.pointerId);document.body.classList.add('dragging')});divider.addEventListener('pointermove',e=>{if(!divider.hasPointerCapture(e.pointerId))return;const r=panes.getBoundingClientRect();const horizontal=matchMedia('(orientation:landscape)').matches;ratio=Math.max(.2,Math.min(.8,horizontal?(e.clientX-r.left)/(r.width-divider.offsetWidth):(e.clientY-r.top)/(r.height-divider.offsetHeight)));layout()});function stop(){document.body.classList.remove('dragging');localStorage.setItem('split-ratio',ratio)}divider.addEventListener('pointerup',stop);divider.addEventListener('pointercancel',stop);document.addEventListener('focusout',()=>{window.scrollTo(0,0);requestAnimationFrame(layout);setTimeout(layout,350);setTimeout(layout,800)});window.addEventListener('resize',layout);window.addEventListener('orientationchange',()=>{layout.maxHeight=0;requestAnimationFrame(layout);setTimeout(layout,400)});if(window.visualViewport){window.visualViewport.addEventListener('resize',layout);window.visualViewport.addEventListener('scroll',layout)}layout();
 
 // Check the published HTML rather than relying on cached responses.
 // Reload only when a newer deployment is detected, preserving saved URLs and split ratio.
