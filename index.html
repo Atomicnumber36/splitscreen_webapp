@@ -15,10 +15,9 @@
 .pane .bar.is-hidden{display:none}
 .pane .bar input{background:transparent;border:0;outline:none;border-radius:0;padding:7px 2px;color:#172033;font-size:16px;min-width:0}
 .pane .bar button{flex:none;border-radius:999px;padding:10px 16px;background:#273b56;color:#fff;font-weight:600;font-size:13px}
-.pane:not(.url-hidden) .show-url,.pane.url-hidden .show-url{bottom:0}
-@media (orientation:portrait){#bottom .bar{top:28px;bottom:auto}#bottom:not(.url-hidden) .show-url,#bottom.url-hidden .show-url{top:0;bottom:auto}}
+@media (orientation:portrait){#bottom .bar{top:28px;bottom:auto}}
 </style></head><body><main class="app"><section class="panes" id="panes"><div class="pane" id="top"><div class="web-content"><iframe title="Øverste hjemmeside" referrerpolicy="no-referrer"></iframe></div><form novalidate class="bar" data-id="0"><input aria-label="Øverste webadresse" type="url" inputmode="url" placeholder="https://example.com"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div><div class="divider" id="divider" role="separator" aria-label="Træk for at ændre højden" aria-orientation="horizontal"></div><div class="pane" id="bottom"><div class="web-content"><iframe title="Nederste hjemmeside" referrerpolicy="no-referrer"></iframe></div><form novalidate class="bar" data-id="1"><input aria-label="Nederste webadresse" type="url" inputmode="url" placeholder="https://example.org"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div></section></main><script>
-const APP_VERSION='2026-11-17-floating-address-pill-43';
+const APP_VERSION='2026-11-17-preserve-url-toggle-44';
 // Extend the outer app into the iOS home-indicator safe area while keeping top:0.
 // Fixed top/bottom constraints adapt to viewport and orientation changes.
 
