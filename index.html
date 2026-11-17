@@ -10,7 +10,7 @@
 .web-content>iframe{position:absolute;top:0;left:0;display:block;width:133.333333%;height:133.333333%;max-width:none;max-height:none;min-width:0;min-height:0;flex:none;border:0;background:#fff;transform:scale(.75);transform-origin:top left}
 @media (orientation:portrait){#bottom .web-content{order:1}}
 </style></head><body><main class="app"><section class="panes" id="panes"><div class="pane" id="top"><div class="web-content"><iframe title="Øverste hjemmeside" referrerpolicy="no-referrer"></iframe></div><form novalidate class="bar" data-id="0"><input aria-label="Øverste webadresse" type="url" inputmode="url" placeholder="https://example.com"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div><div class="divider" id="divider" role="separator" aria-label="Træk for at ændre højden" aria-orientation="horizontal"></div><div class="pane" id="bottom"><div class="web-content"><iframe title="Nederste hjemmeside" referrerpolicy="no-referrer"></iframe></div><form novalidate class="bar" data-id="1"><input aria-label="Nederste webadresse" type="url" inputmode="url" placeholder="https://example.org"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div></section></main><script>
-const APP_VERSION='2026-11-17-restored-fullheight-content-41';
+const APP_VERSION='2026-11-17-landscape-viewport-height-42';
 // Extend the outer app into the iOS home-indicator safe area while keeping top:0.
 // Fixed top/bottom constraints adapt to viewport and orientation changes.
 
@@ -20,7 +20,7 @@ function syncAppScreenHeight(){
  const app=document.querySelector('.app');
  const standalone=navigator.standalone===true || matchMedia('(display-mode: standalone)').matches;
  const h=screen.height;
- app.style.height=standalone && Number.isFinite(h) && h>0 ? h+'px' : '100dvh';
+ app.style.height=standalone && matchMedia('(orientation:portrait)').matches && Number.isFinite(h) && h>0 ? h+'px' : '100dvh';
 }
 syncAppScreenHeight();
 addEventListener('orientationchange',()=>setTimeout(syncAppScreenHeight,300));
