@@ -5,7 +5,7 @@
 @media (orientation:portrait){#bottom .bar{order:0}#bottom .show-url{top:0;bottom:auto;border-radius:0 0 12px 12px}#bottom:not(.url-hidden) .show-url{top:48px;bottom:auto}#bottom.url-hidden .show-url{top:0;bottom:auto}#bottom iframe{order:1}}
 @media (orientation:landscape){.panes{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr) 6px minmax(0,1fr)}.pane{min-width:0;min-height:0}.divider{width:6px;height:auto;cursor:col-resize}.divider:after{width:4px;height:52px}} 
 </style></head><body><main class="app"><section class="panes" id="panes"><div class="pane" id="top"><iframe title="Øverste hjemmeside" referrerpolicy="no-referrer"></iframe><form novalidate class="bar" data-id="0"><input aria-label="Øverste webadresse" type="url" inputmode="url" placeholder="https://example.com"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div><div class="divider" id="divider" role="separator" aria-label="Træk for at ændre højden" aria-orientation="horizontal"></div><div class="pane" id="bottom"><iframe title="Nederste hjemmeside" referrerpolicy="no-referrer"></iframe><form novalidate class="bar" data-id="1"><input aria-label="Nederste webadresse" type="url" inputmode="url" placeholder="https://example.org"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div></section></main><script>
-const APP_VERSION='2026-11-17-viewport-diagnostics-90pct-24';
+const APP_VERSION='2026-11-17-corner-markers-25';
 const panes=document.getElementById('panes'),topPane=document.getElementById('top'),bottomPane=document.getElementById('bottom'),divider=document.getElementById('divider');let ratio=Number(localStorage.getItem('split-ratio')||.5);ratio=Math.max(.2,Math.min(.8,ratio));
 function layout(){const horizontal=matchMedia('(orientation:landscape)').matches;if(horizontal){panes.style.gridTemplateColumns=`minmax(0,${ratio}fr) 6px minmax(0,${1-ratio}fr)`;panes.style.gridTemplateRows='minmax(0,1fr)'}else{panes.style.gridTemplateRows=`minmax(0,${ratio}fr) 6px minmax(0,${1-ratio}fr)`;panes.style.gridTemplateColumns='minmax(0,1fr)'}divider.setAttribute('aria-orientation',horizontal?'vertical':'horizontal')}
 function normalize(raw){let value=raw.trim();if(!value)return null;if(!/^https?:\/\//i.test(value))value='https://'+value;try{const u=new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:null}catch{return null}}
@@ -42,6 +42,18 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkForUp
 window.addEventListener('pageshow',()=>checkForUpdate());
 window.addEventListener('online',()=>checkForUpdate());
 setInterval(()=>{if(!document.hidden)checkForUpdate()},60000);
+
+
+// Permanent test markers: green = viewport corners, orange = app corners.
+(function(){
+ const css=document.createElement('style');
+ css.textContent='.corner-test{position:fixed;z-index:2147483646;width:22px;height:22px;background:#00ff55;border:2px solid #000;pointer-events:none}.corner-test.tl{top:0;left:0}.corner-test.tr{top:0;right:0}.corner-test.bl{bottom:0;left:0}.corner-test.br{bottom:0;right:0}.app-corner-test{position:absolute;z-index:2147483645;width:14px;height:14px;background:#ff8800;border:2px solid #000;pointer-events:none}.app-corner-test.tl{top:0;left:0}.app-corner-test.tr{top:0;right:0}.app-corner-test.bl{bottom:0;left:0}.app-corner-test.br{bottom:0;right:0}';
+ document.head.appendChild(css);
+ for(const pos of ['tl','tr','bl','br']){
+  const screen=document.createElement('div');screen.className='corner-test '+pos;document.body.appendChild(screen);
+  const app=document.createElement('div');app.className='app-corner-test '+pos;document.querySelector('.app').appendChild(app);
+ }
+})();
 
 // Temporary viewport diagnostics: enable with ?debug=1.
 if(new URLSearchParams(location.search).has('debug')){
