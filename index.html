@@ -40,8 +40,11 @@ body.dragging .divider::after{background:none}
 .drag-zone{position:absolute;display:block;pointer-events:auto;touch-action:none;cursor:inherit;z-index:1}
 @media (orientation:portrait){.drag-zone{top:50%;height:44px;transform:translateY(-50%);width:calc(50% - 72px)}.drag-start{left:0}.drag-end{right:0}}
 @media (orientation:landscape){.drag-zone{left:50%;width:44px;transform:translateX(-50%);height:calc(50% - 72px)}.drag-start{top:0}.drag-end{bottom:0}}
+
+/* No visual drag indicators; keep the existing touch zones and resizing behavior. */
+.divider::before,.divider::after{content:none!important;display:none!important}
 </style></head><body><main class="app"><section class="panes" id="panes"><div class="pane" id="top"><div class="web-content"><iframe title="Øverste hjemmeside" referrerpolicy="no-referrer"></iframe></div><form novalidate class="bar" data-id="0"><input aria-label="Øverste webadresse" type="url" inputmode="url" placeholder="https://example.com"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div><div class="divider" id="divider" role="separator" aria-label="Træk for at ændre højden" aria-orientation="horizontal"><span class="drag-zone drag-start"></span><span class="drag-zone drag-end"></span></div><div class="pane" id="bottom"><div class="web-content"><iframe title="Nederste hjemmeside" referrerpolicy="no-referrer"></iframe></div><form novalidate class="bar" data-id="1"><input aria-label="Nederste webadresse" type="url" inputmode="url" placeholder="https://example.org"><button>Åbn</button></form><button type="button" class="show-url" aria-label="Vis eller skjul adressefelt"></button></div></section></main><script>
-const APP_VERSION='2026-11-17-isolated-side-drag-62';
+const APP_VERSION='2026-11-17-no-drag-icons-63';
 // Extend the outer app into the iOS home-indicator safe area while keeping top:0.
 // Fixed top/bottom constraints adapt to viewport and orientation changes.
 
